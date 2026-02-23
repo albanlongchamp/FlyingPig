@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organ Transport & Transplantation Workflow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        h4 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .progress-bar {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-inner {
+            width: 100%;
+            height: 25px;
+            background: #ecf0f1;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+        }
+
+        .checklist-item {
+            margin: 10px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .checklist-item:hover {
+            background: #e9ecef;
+        }
+
+        .checklist-item.completed {
+            background: #d4edda;
+            border-left-color: #28a745;
+            opacity: 0.8;
+        }
+
+        .checklist-item label {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            gap: 10px;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .checklist-item .item-content {
+            flex: 1;
+        }
+
+        .checklist-item .item-content strong {
+            color: #2c3e50;
+        }
+
+        .checklist-item.completed .item-content {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .checklist-item.completed .item-content strong {
+            color: #6c757d;
+        }
+
+        .sub-item {
+            margin-left: 30px;
+            margin-top: 8px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .sub-item label {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px;
+        }
+
+        .sub-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .urgent {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .urgent strong {
+            color: #856404;
+        }
+
+        .phase-section {
+            margin-bottom: 30px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-planning { background: #ffc107; color: #856404; }
+        .status-confirmed { background: #17a2b8; color: white; }
+        .status-progress { background: #007bff; color: white; }
+        .status-completed { background: #28a745; color: white; }
+
+        hr {
+            border: none;
+            border-top: 2px solid #ecf0f1;
+            margin: 30px 0;
+        }
+
+        .notes-section {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+            margin-top: 20px;
+        }
+
+        @media print {
+            .progress-bar, .controls {
+                display: none;
+            }
+            .checklist-item.completed {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .controls {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Organ Transport & Transplantation Workflow</h1>
+        
+        <div class="progress-bar">
+            <div class="progress-info">
+                <span><strong>Overall Progress:</strong></span>
+                <span id="progress-text">0%</span>
+            </div>
+            <div class="progress-bar-inner">
+                <div class="progress-fill" id="progress-fill" style="width: 0%">0%</div>
+            </div>
+            <div class="controls">
+                <button class="btn-primary" onclick="saveProgress()">Save Progress</button>
+                <button class="btn-secondary" onclick="resetProgress()">Reset All</button>
+                <button class="btn-success" onclick="exportProgress()">Export Progress</button>
+            </div>
+        </div>
+
+        <div class="phase-section">
+            <h2>Phase 1: Pre-Departure Planning & Confirmation</h2>
+            
+            <h3>1.1 Team Logistics & Transport</h3>
+            
+            <h4>Harvard Team Responsibilities</h4>
+            <div class="checklist-item urgent" id="item-1-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Confirm exact number of people traveling on private jet</strong>
+                        <div class="sub-item">Include Casie in count</div>
+                        <div class="sub-item">Deadline: ASAP</div>
+                        <div class="sub-item">Impact: Determines jet size and booking confirmation</div>
+                    </div>
+                </label>
+            </div>
+            
+            <h4>PITOR Team Responsibilities</h4>
+            <div class="checklist-item" id="item-1-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Finalize traveling team composition</strong>
+                        <div class="sub-item">Confirmed: Alex, Guillaume Mercy, Marc-Olivier Timsit</div>
+                        <div class="sub-item">Pending: Liver transplant colleague confirmation</div>
+                        <div class="sub-item">Pending: Self (team lead) confirmation</div>
+                    </div>
+                </label>
+            </div>
+            
+            <h4>Equipment & Logistics</h4>
+            <div class="checklist-item urgent" id="item-1-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Receive complete equipment list from Casie</strong>
+                        <div class="sub-item">Priority: Items requiring electrical connections</div>
+                        <div class="sub-item">Note: Unloading and rewarming process = 2-3 hours per organ</div>
+                    </div>
+                </label>
+            </div>
+            
+            <h4>Transport Coordination</h4>
+            <div class="checklist-item" id="item-1-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Skylark Aviation coordination</strong> (PITOR responsibility)
+                        <div class="sub-item">Confirm jet booking based on passenger count</div>
+                        <div class="sub-item">Coordinate departure/arrival times</div>
+                        <div class="sub-item">Handle customs and documentation</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Phase 2: Facilities & Organ Allocation</h2>
+            
+            <h3>2.1 Site Assignments</h3>
+            
+            <h4>Site 1: Poitiers</h4>
+            <div class="checklist-item" id="item-2-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 1 (Poitiers) confirmed ready</strong>
+                        <div class="sub-item">Purpose: Normothermic machine perfusion (NMP) for 2 kidneys</div>
+                        <div class="sub-item">Capacity: 2-3 perfusion benches available</div>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-2-1a">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Team Lead assigned</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <h4>Site 2: Near Tours</h4>
+            <div class="checklist-item" id="item-2-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 2 (Near Tours) confirmed ready</strong>
+                        <div class="sub-item">Purpose: Kidney transplantation (2 kidneys) on porcine model</div>
+                        <div class="sub-item">Capacity: Can perform 2 transplants almost simultaneously</div>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-2-2a">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Team Lead assigned</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <h4>Site 3: Paris</h4>
+            <div class="checklist-item" id="item-2-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 3 (Paris) confirmed ready</strong>
+                        <div class="sub-item">Purpose: Liver normothermic perfusion on Clavien machine</div>
+                        <div class="sub-item">Reference: Eshmuminov et al. Nature Biotechnology 2020</div>
+                        <div class="sub-item">Capacity: Full week perfusion capability</div>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-2-3a">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Team Lead assigned</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>2.2 Organ Allocation Plan</h3>
+            <div class="checklist-item" id="item-2-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>4 Kidneys allocated</strong>
+                        <div class="sub-item">2 → Site 1 (Poitiers) for NMP</div>
+                        <div class="sub-item">2 → Site 2 (Near Tours) for transplantation</div>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-2-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>1 Liver allocated</strong>
+                        <div class="sub-item">1 → Site 3 (Paris) for normothermic perfusion</div>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-2-6">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>1 Heart allocated</strong> (if applicable)
+                        <div class="sub-item">Using partial freezing protocol</div>
+                        <div class="sub-item">Destination: To be determined</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Phase 3: Timeline Coordination</h2>
+            
+            <h3>Option A: Single Departure (April 15 Start)</h3>
+            <div class="checklist-item" id="item-3-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Single departure timeline confirmed</strong>
+                        <div class="sub-item">Departure: Evening of April 14 (Boston)</div>
+                        <div class="sub-item">Arrival: Morning of April 15 (France)</div>
+                        <div class="sub-item">Operations Start: April 15</div>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>Option B: Staggered Schedule</h3>
+            <div class="checklist-item" id="item-3-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Staggered schedule confirmed</strong>
+                        <div class="sub-item">Monday Evening: Departure from Boston</div>
+                        <div class="sub-item">Tuesday: Perform kidney transplants (Site 2)</div>
+                        <div class="sub-item">Wednesday: Start kidney NMP (Site 1)</div>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>Timeline Decision</h3>
+            <div class="checklist-item" id="item-3-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Harvard team feedback received</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-3-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Final timeline confirmed</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-3-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>All sites notified</strong>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Phase 4: Animal Model & Blood Requirements</h2>
+            
+            <h3>4.1 Animal Model Confirmation</h3>
+            <div class="checklist-item" id="item-4-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Confirm "Large White" (wild type) pigs availability</strong>
+                        <div class="sub-item">Required for: Transplants and blood supply compatibility</div>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-4-1a">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Responsible person assigned</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>4.2 Blood Volume Requirements</h3>
+            <p><strong>Procurement Method:</strong> Exsanguination during procurement</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Organ</th>
+                        <th>Blood Type</th>
+                        <th>Volume Required</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Liver</td>
+                        <td>Whole blood</td>
+                        <td>3L</td>
+                        <td>Ensures one-week perfusion</td>
+                    </tr>
+                    <tr>
+                        <td>Kidneys (NMP)</td>
+                        <td>Packed red blood cells</td>
+                        <td>1 unit per kidney</td>
+                        <td>Derived from 2L whole blood per unit</td>
+                    </tr>
+                    <tr>
+                        <td>Kidneys (NMP)</td>
+                        <td>Total whole blood</td>
+                        <td>4L</td>
+                        <td>For 2 kidneys (2L × 2)</td>
+                    </tr>
+                    <tr>
+                        <td>Heart (if applicable)</td>
+                        <td>Whole blood (CPDA)</td>
+                        <td>2L</td>
+                        <td>Using partial freezing protocol</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h4>Blood Collection Checklist</h4>
+            <div class="checklist-item" id="item-4-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Liver: 3L whole blood prepared</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-4-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Kidneys: 4L whole blood prepared</strong> (for 2 NMP kidneys)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-4-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Heart: 2L CPDA whole blood prepared</strong> (if applicable)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-4-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Total blood volume: 9L (or 11L if heart included)</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-4-6">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Collection method: Exsanguination during procurement confirmed</strong>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Phase 5: Experimental Protocol</h2>
+            
+            <h3>5.1 Protocol Development</h3>
+            <div class="checklist-item" id="item-5-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Draft detailed experimental protocol</strong> (PITOR responsibility)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Include partial freezing section</strong> (based on Harvard pre-print)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Share with Harvard team for review</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Incorporate Harvard team corrections</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Final protocol approved</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>5.2 Protocol Components</h3>
+            <div class="checklist-item" id="item-5-6">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Procurement procedures</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-7">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Transport protocols</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-8">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site-specific procedures</strong>
+                        <div class="sub-item">Site 1 (Poitiers) NMP protocol</div>
+                        <div class="sub-item">Site 2 (Tours) transplantation protocol</div>
+                        <div class="sub-item">Site 3 (Paris) liver perfusion protocol</div>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-9">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Partial freezing protocol (heart)</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-10">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Blood collection and handling</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-5-11">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Data collection procedures</strong>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Phase 6: Pre-Departure Checklist</h2>
+            
+            <h3>6.1 Documentation</h3>
+            <div class="checklist-item" id="item-6-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>All permits and approvals obtained</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Customs documentation prepared</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Equipment manifests completed</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Team member travel documents verified</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>6.2 Equipment</h3>
+            <div class="checklist-item" id="item-6-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Complete equipment list received from Casie</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-6">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Electrical requirements identified and accommodated</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-7">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>All equipment tested and packed</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-8">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Backup equipment identified</strong> (if applicable)
+                    </div>
+                </label>
+            </div>
+            
+            <h3>6.3 Site Readiness</h3>
+            <div class="checklist-item" id="item-6-9">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 1 (Poitiers) confirmed ready</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-10">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 2 (Tours) confirmed ready</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-11">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 3 (Paris) confirmed ready</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-12">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>All perfusion machines tested</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-13">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>All surgical facilities prepared</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>6.4 Animal & Blood Preparation</h3>
+            <div class="checklist-item" id="item-6-14">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Pigs confirmed available</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-15">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Blood collection equipment prepared</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-6-16">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Blood storage facilities ready</strong>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Phase 7: Execution Timeline</h2>
+            
+            <h3>Day -1: Departure Day</h3>
+            <div class="checklist-item" id="item-7-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Final team briefing</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Equipment loaded</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Organs procured and prepared</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Departure from Boston</strong> (evening)
+                    </div>
+                </label>
+            </div>
+            
+            <h3>Day 0: Arrival Day</h3>
+            <div class="checklist-item" id="item-7-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Arrival in France</strong> (morning)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-6">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Customs clearance</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-7">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Transport to sites</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-8">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Equipment unloading and setup</strong> (2-3 hours per organ)
+                    </div>
+                </label>
+            </div>
+            
+            <h3>Day 1: Operations Begin</h3>
+            <div class="checklist-item" id="item-7-9">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 2: Kidney transplants begin</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-10">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 1: NMP setup begins</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-11">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 3: Liver perfusion begins</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>Day 2+: Ongoing Operations</h3>
+            <div class="checklist-item" id="item-7-12">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 1: NMP monitoring</strong> (ongoing)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-13">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 2: Post-transplant monitoring</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-7-14">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site 3: Liver perfusion</strong> (up to 1 week)
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Phase 8: Communication & Coordination</h2>
+            
+            <h3>Key Contacts</h3>
+            <div class="checklist-item" id="item-8-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Harvard Team Lead: Name/Contact confirmed</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-8-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>PITOR Team Lead: Name/Contact confirmed</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-8-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Skylark Aviation: Contact confirmed</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-8-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Site Coordinators: All contacts confirmed</strong>
+                        <div class="sub-item">Site 1 (Poitiers)</div>
+                        <div class="sub-item">Site 2 (Tours)</div>
+                        <div class="sub-item">Site 3 (Paris)</div>
+                    </div>
+                </label>
+            </div>
+            
+            <h3>Communication Schedule</h3>
+            <div class="checklist-item" id="item-8-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Weekly status updates scheduled</strong> (until 2 weeks before departure)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-8-6">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Daily updates scheduled</strong> (final week)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-8-7">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Real-time updates protocol established</strong> (during execution)
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Immediate Next Steps (Priority Order)</h2>
+            <div class="checklist-item urgent" id="item-next-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>URGENT: Harvard team confirms exact number of people traveling on jet</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item urgent" id="item-next-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>URGENT: Casie provides complete equipment list</strong> (especially electrical requirements)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-next-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>PITOR drafts detailed experimental protocol</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-next-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Confirm pig availability</strong> (Large White wild type)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-next-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Finalize timeline decision</strong> (single vs. staggered departure)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-next-6">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Confirm all site readiness</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-next-7">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Coordinate Skylark Aviation booking</strong>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="phase-section">
+            <h2>Notes & Open Questions</h2>
+            <div class="checklist-item" id="item-notes-1">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Heart allocation site determined</strong> (if applicable)
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-notes-2">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Liver transplant colleague confirmed</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-notes-3">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Backup plans for equipment failures established</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-notes-4">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Contingency plans for transport delays established</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-notes-5">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Data sharing protocols established</strong>
+                    </div>
+                </label>
+            </div>
+            <div class="checklist-item" id="item-notes-6">
+                <label>
+                    <input type="checkbox" onchange="updateProgress()">
+                    <div class="item-content">
+                        <strong>Publication coordination agreed</strong>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="notes-section">
+            <h2>Status Tracking</h2>
+            <p><strong>Last Updated:</strong> <span id="last-updated">Not saved yet</span></p>
+            <p><strong>Overall Status:</strong> 
+                <span class="status-badge status-planning">Planning</span>
+            </p>
+            <p><strong>Blockers:</strong> [List any current blockers]</p>
+            <p style="margin-top: 20px; font-size: 0.9em; color: #666;">
+                <em>Workflow created: February 23, 2026</em>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Load saved progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('organTransportProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(id => {
+                    const checkbox = document.querySelector(`#${id} input[type="checkbox"]`);
+                    if (checkbox) {
+                        checkbox.checked = progress[id];
+                        updateItemStyle(id, progress[id]);
+                    }
+                });
+                updateProgress();
+            }
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            const progress = {};
+            checkboxes.forEach(checkbox => {
+                const item = checkbox.closest('.checklist-item');
+                if (item && item.id) {
+                    progress[item.id] = checkbox.checked;
+                }
+            });
+            localStorage.setItem('organTransportProgress', JSON.stringify(progress));
+            
+            // Update last updated timestamp
+            document.getElementById('last-updated').textContent = new Date().toLocaleString();
+            
+            alert('Progress saved! Your checklist state has been saved to your browser.');
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            let completed = 0;
+            let total = checkboxes.length;
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    completed++;
+                    const item = checkbox.closest('.checklist-item');
+                    if (item && item.id) {
+                        updateItemStyle(item.id, true);
+                    }
+                } else {
+                    const item = checkbox.closest('.checklist-item');
+                    if (item && item.id) {
+                        updateItemStyle(item.id, false);
+                    }
+                }
+            });
+            
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            document.getElementById('progress-fill').textContent = percentage + '%';
+            document.getElementById('progress-text').textContent = percentage + '%';
+        }
+
+        // Update item style based on completion
+        function updateItemStyle(itemId, completed) {
+            const item = document.getElementById(itemId);
+            if (item) {
+                if (completed) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            }
+        }
+
+        // Reset all checkboxes
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all checkboxes? This cannot be undone.')) {
+                const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    const item = checkbox.closest('.checklist-item');
+                    if (item && item.id) {
+                        updateItemStyle(item.id, false);
+                    }
+                });
+                localStorage.removeItem('organTransportProgress');
+                document.getElementById('last-updated').textContent = 'Not saved yet';
+                updateProgress();
+                alert('All checkboxes have been reset.');
+            }
+        }
+
+        // Export progress as text
+        function exportProgress() {
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            let completed = [];
+            let pending = [];
+            
+            checkboxes.forEach(checkbox => {
+                const item = checkbox.closest('.checklist-item');
+                const text = item.querySelector('.item-content strong')?.textContent || 
+                            item.querySelector('.item-content')?.textContent?.trim() || '';
+                if (checkbox.checked) {
+                    completed.push('✓ ' + text);
+                } else {
+                    pending.push('☐ ' + text);
+                }
+            });
+            
+            const exportText = `Organ Transport Workflow Progress Report
+Generated: ${new Date().toLocaleString()}
+
+COMPLETED ITEMS (${completed.length}):
+${completed.join('\n')}
+
+PENDING ITEMS (${pending.length}):
+${pending.join('\n')}
+
+Total Progress: ${Math.round((completed.length / (completed.length + pending.length)) * 100)}%
+`;
+            
+            // Create download link
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `organ-transport-progress-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+            
+            // Add event listeners to all checkboxes
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateProgress);
+            });
+        });
+
+        // Auto-save on checkbox change (optional - can be removed if too frequent)
+        // Uncomment the following if you want auto-save:
+        /*
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                saveProgress();
+            }
+        });
+        */
+    </script>
+</body>
+</html>
